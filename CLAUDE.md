@@ -2,9 +2,21 @@
 
 ## Current Status
 
-**Phase 3 (Technical Build) is COMPLETE.**
+**Phase 3 (Technical Build) is COMPLETE. Deployed to Railway.**
 
-The platform is deployed to Railway via GitHub: https://github.com/ChrisB2025/econ-platform
+- **Repository**: https://github.com/ChrisB2025/econ-platform
+- **Live URL**: https://web-production-0007.up.railway.app
+
+### Deployment Notes
+- Healthcheck fix applied: `.railway.app` wildcard in ALLOWED_HOSTS
+- Requires PostgreSQL database added in Railway
+- Content loads automatically via `release` phase in Procfile
+
+### Next Steps (if continuing)
+1. Verify content loaded: visit `/topics/inflation/`
+2. Add `ANTHROPIC_API_KEY` for AI chatbot
+3. Add `OPENAI_API_KEY` and run `generate_audio` for audio content
+4. Phase 4: Testing and refinement
 
 ## Core Documents
 
