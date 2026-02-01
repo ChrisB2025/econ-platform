@@ -49,6 +49,7 @@
     {% block extra_js %}{% endblock %}
 
     {% if topic and chatbot_enabled %}
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="{% static 'js/chatbot.js' %}"></script>
     {% endif %}
 </body>

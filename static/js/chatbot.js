@@ -107,7 +107,16 @@ What would you like to explore?`;
     }
 
     formatMessage(content) {
-        // Basic markdown-like formatting
+        // Use marked.js for proper markdown rendering
+        if (typeof marked !== 'undefined') {
+            // Configure marked for safe rendering
+            marked.setOptions({
+                breaks: true,  // Convert \n to <br>
+                gfm: true,     // GitHub Flavored Markdown
+            });
+            return marked.parse(content);
+        }
+        // Fallback to basic formatting if marked isn't loaded
         return content
             .replace(/\n\n/g, '</p><p>')
             .replace(/\n/g, '<br>')
