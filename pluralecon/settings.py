@@ -176,6 +176,7 @@ OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY', '')  # For TTS audio generatio
 if not DEBUG:
     # HTTPS settings
     SECURE_SSL_REDIRECT = True
+    SECURE_REDIRECT_EXEMPT = [r'^health$']  # Allow healthcheck without HTTPS redirect
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
