@@ -2,7 +2,7 @@
 builder = "nixpacks"
 
 [deploy]
-startCommand = "gunicorn pluralecon.wsgi --log-file -"
+startCommand = "python manage.py setup_platform && gunicorn pluralecon.wsgi --log-file -"
 healthcheckPath = "/health"
 healthcheckTimeout = 100
 restartPolicyType = "ON_FAILURE"
