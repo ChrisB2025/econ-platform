@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Pluralist Economics{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <nav class="main-nav">
+                <a href="{% url 'topics:home' %}" class="site-logo">Pluralist Economics</a>
+                <ul class="nav-links">
+                    <li><a href="{% url 'topics:home' %}">Topics</a></li>
+                    {% if topic %}
+                    <li><a href="{% url 'topics:topic_hub' topic.slug %}">{{ topic.name }}</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p class="footer-text">
+                Pluralist Economics Teaching Platform
+                <span class="separator">|</span>
+                Presenting economics through multiple schools of thought
+            </p>
+            <p class="footer-disclaimer">
+                Content is for educational purposes. Each perspective is presented in its strongest form.
+            </p>
+        </div>
+    </footer>
+
+    {% block chatbot %}
+    {% if topic %}
+    {% include 'topics/includes/chatbot.html' %}
+    {% endif %}
+    {% endblock %}
+
+    {% block extra_js %}{% endblock %}
+
+    {% if topic and chatbot_enabled %}
+    <script src="{% static 'js/chatbot.js' %}"></script>
+    {% endif %}
+</body>
+</html>

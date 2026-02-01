@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block title %}Teaching Materials | {{ topic.name }} | Pluralist Economics{% endblock %}
+
+{% block content %}
+<div class="container">
+    <header class="topic-header">
+        <h1>Teaching Materials</h1>
+        <p class="header-subtitle">{{ topic.name }}</p>
+    </header>
+
+    <!-- Download All Button -->
+    {% if materials %}
+    <div class="download-all-section">
+        <a href="{% url 'topics:all_materials_download' topic.slug %}" class="btn btn-primary">
+            Download All Materials (Markdown)
+        </a>
+    </div>
+    {% endif %}
+
+    <!-- Teaching Materials Section -->
+    <section class="materials-section">
+        <h2>Written Materials</h2>
+        {% if materials %}
+        <div class="materials-grid">
+            {% for material in materials %}
+            <div class="material-card">
+                <div class="material-type-badge">{{ material.get_material_type_display }}</div>
+                <h3>{{ material.title }}</h3>
+                {% if material.description %}
+                <p>{{ material.description }}</p>
+                {% endif %}
+                <div class="material-actions">
+                    <a href="{% url 'topics:material_detail' topic.slug material.id %}" class="btn-link">
+                        View
+                    </a>
+                    <a href="{% url 'topics:material_download' topic.slug material.id %}" class="btn-link btn-download">
+                        Download .md
+                    </a>
+                    <a href="{% url 'topics:material_download_format' topic.slug material.id 'txt' %}" class="btn-link btn-download">
+                        Download .txt
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="no-content">No written materials available yet.</p>
+        {% endif %}
+    </section>
+
+    <!-- Audio Content Section -->
+    <section class="audio-section">
+        <h2>Audio Content</h2>
+        {% if audio_content %}
+        <div class="audio-grid">
+            {% for audio in audio_content %}
+            <div class="audio-card">
+                <div class="audio-type-badge">{{ audio.get_audio_type_display }}</div>
+                <h3>{{ audio.title }}</h3>
+                {% if audio.description %}
+                <p>{{ audio.description }}</p>
+                {% endif %}
+                {% if audio.duration_display %}
+                <span class="audio-duration">Duration: {{ audio.duration_display }}</span>
+                {% endif %}
+                {% if audio.audio_file %}
+                <audio controls class="audio-player">
+                    <source src="{{ audio.audio_file.url }}" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+                <a href="{{ audio.audio_file.url }}" class="btn-link btn-download" download>
+                    Download Audio
+                </a>
+                {% else %}
+                <p class="audio-pending">Audio generation pending</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="no-content">No audio content available yet.</p>
+        {% endif %}
+    </section>
+
+    <!-- Back to Topic Hub -->
+    <nav class="back-navigation">
+        <a href="{% url 'topics:topic_hub' topic.slug %}" class="back-link">
+            Back to {{ topic.name }}
+        </a>
+    </nav>
+</div>
+{% endblock %}

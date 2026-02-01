@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ school.name }} View on {{ topic.name }} | Pluralist Economics{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Topic Header -->
+    <header class="topic-header">
+        <h1>{{ topic.name }}</h1>
+        <p class="current-school" style="--school-color: {{ school.color }}">
+            <span class="school-indicator"></span>
+            {{ school.name }} Perspective
+        </p>
+    </header>
+
+    <!-- School Navigation Tabs -->
+    <nav class="school-nav">
+        <ul class="school-tabs">
+            <li class="school-tab">
+                <a href="{% url 'topics:topic_hub' topic.slug %}">
+                    <span class="tab-label">Introduction</span>
+                </a>
+            </li>
+            {% for exp in explanations %}
+            <li class="school-tab {% if exp.school.slug == school.slug %}active{% endif %}"
+                style="--school-color: {{ exp.school.color }}">
+                <a href="{% url 'topics:explanation' topic.slug exp.school.slug %}">
+                    <span class="tab-label">{{ exp.school.name }}</span>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </nav>
+
+    <!-- Main Content Area -->
+    <article class="explanation-content" style="--school-color: {{ school.color }}">
+        <div class="content-tier-badge tier-{{ explanation.tier }}">
+            {% if explanation.tier == 1 %}Approved Reference
+            {% elif explanation.tier == 2 %}Platform Content
+            {% else %}Generative Content{% endif %}
+        </div>
+
+        <div class="explanation-body prose">
+            {{ content_html|safe }}
+        </div>
+
+        <!-- Navigation to Other Schools -->
+        <nav class="school-navigation">
+            <h3>Explore Other Perspectives</h3>
+            <div class="other-schools">
+                {% for exp in explanations %}
+                {% if exp.school.slug != school.slug %}
+                <a href="{% url 'topics:explanation' topic.slug exp.school.slug %}"
+                   class="other-school-link"
+                   style="--school-color: {{ exp.school.color }}">
+                    <span class="school-name">{{ exp.school.name }}</span>
+                    <span class="school-desc">{{ exp.school.short_description|truncatewords:12 }}</span>
+                </a>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </nav>
+    </article>
+
+    <!-- Sidebar -->
+    <aside class="topic-sidebar">
+        <div class="sidebar-section">
+            <h3>On This Page</h3>
+            <p class="sidebar-description">{{ school.short_description }}</p>
+        </div>
+
+        <div class="sidebar-section">
+            <h3>Compare</h3>
+            <ul class="sidebar-links">
+                <li><a href="{% url 'topics:comparisons' topic.slug %}">Compare All Schools</a></li>
+            </ul>
+        </div>
+
+        <div class="sidebar-section">
+            <h3>Resources</h3>
+            <ul class="sidebar-links">
+                <li><a href="{% url 'topics:materials' topic.slug %}">Teaching Materials</a></li>
+            </ul>
+        </div>
+    </aside>
+</div>
+{% endblock %}

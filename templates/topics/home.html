@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}Topics | Pluralist Economics{% endblock %}
+
+{% block content %}
+<div class="container">
+    <section class="hero">
+        <h1>Pluralist Economics</h1>
+        <p class="hero-subtitle">
+            Explore economic topics through multiple schools of thought.
+            No ideology favored. Every perspective examined critically.
+        </p>
+    </section>
+
+    <section class="topics-grid">
+        <h2>Available Topics</h2>
+
+        {% if topics %}
+        <div class="topic-cards">
+            {% for topic in topics %}
+            <a href="{% url 'topics:topic_hub' topic.slug %}" class="topic-card">
+                <h3>{{ topic.name }}</h3>
+                <p>Explore {{ topic.name|lower }} through {{ topic.explanations.count }} schools of thought</p>
+                <span class="topic-card-cta">Start exploring</span>
+            </a>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="no-topics">No topics available yet. Check back soon.</p>
+        {% endif %}
+    </section>
+
+    <section class="about-section">
+        <h2>About This Platform</h2>
+        <div class="about-content">
+            <p>
+                Economics is contested terrain. Different schools of thought offer different explanations
+                for how economies work, what causes problems like inflation and unemployment, and what
+                policies might help.
+            </p>
+            <p>
+                This platform presents each perspective in its strongest form, subjects all views to
+                the same critical scrutiny, and lets you draw your own conclusions.
+            </p>
+            <div class="principles">
+                <h3>Our Principles</h3>
+                <ul>
+                    <li><strong>Genuine pluralism</strong> - No school of thought is favored</li>
+                    <li><strong>Steel-man first</strong> - Present each view at its best before critique</li>
+                    <li><strong>Teaching, not advocacy</strong> - Help you understand, not convert you</li>
+                    <li><strong>Honest about limitations</strong> - Acknowledge contested evidence</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

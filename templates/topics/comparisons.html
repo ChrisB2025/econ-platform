@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}Compare Schools on {{ topic.name }} | Pluralist Economics{% endblock %}
+
+{% block content %}
+<div class="container">
+    <header class="topic-header">
+        <h1>Compare Schools of Thought</h1>
+        <p class="header-subtitle">{{ topic.name }}</p>
+    </header>
+
+    <!-- School Selection -->
+    <section class="school-selector">
+        <h2>Select Schools to Compare</h2>
+        <form method="get" class="selector-form">
+            <div class="school-checkboxes">
+                {% for school in schools %}
+                <label class="school-checkbox" style="--school-color: {{ school.color }}">
+                    <input type="checkbox" name="schools" value="{{ school.slug }}"
+                           {% if school in selected_schools %}checked{% endif %}>
+                    <span class="checkbox-label">{{ school.name }}</span>
+                </label>
+                {% endfor %}
+            </div>
+            <button type="submit" class="btn btn-primary">Update Comparison</button>
+        </form>
+    </section>
+
+    <!-- Comparison Tables -->
+    <section class="comparisons">
+        {% for question in questions %}
+        <div class="comparison-block">
+            <h2>{{ question.question }}</h2>
+            {% if question.description %}
+            <p class="question-description">{{ question.description }}</p>
+            {% endif %}
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>School</th>
+                        <th>Position</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for position in question.positions.all %}
+                    {% if position.school in selected_schools %}
+                    <tr style="--school-color: {{ position.school.color }}">
+                        <td class="school-cell">
+                            <span class="school-indicator"></span>
+                            {{ position.school.name }}
+                        </td>
+                        <td class="position-cell">{{ position.position_summary }}</td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            {% if question.points_of_agreement %}
+            <div class="agreement-block">
+                <h4>Points of Agreement</h4>
+                <p>{{ question.points_of_agreement }}</p>
+            </div>
+            {% endif %}
+
+            {% if question.key_divergence %}
+            <div class="divergence-block">
+                <h4>Key Divergence</h4>
+                <p>{{ question.key_divergence }}</p>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </section>
+
+    <!-- Back to Topic Hub -->
+    <nav class="back-navigation">
+        <a href="{% url 'topics:topic_hub' topic.slug %}" class="back-link">
+            Back to {{ topic.name }}
+        </a>
+    </nav>
+</div>
+{% endblock %}
