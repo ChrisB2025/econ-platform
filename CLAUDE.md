@@ -2,60 +2,90 @@
 
 ## Current Status
 
-**Phase 1 (Research) and Phase 2 (Content Writing) are COMPLETE.**
+**Phase 3 (Technical Build) is COMPLETE.**
 
-**Phase 3 (Technical Build) is READY TO START.**
-
-Next step: Set up Django project with virtual environment and begin building the platform.
+The platform is deployed to Railway via GitHub: https://github.com/ChrisB2025/econ-platform
 
 ## Core Documents
 
-Read these files before starting any work on this project:
-
-- `docs/PROJECT_BRIEF.md` — Full project specification, editorial principles, content architecture, technical stack, and MVP scope (inflation module)
-- `docs/DECISIONS.md` — Running log of design decisions and their rationale
-- `docs/CURRENT_PHASE.md` — What is currently being worked on and immediate next steps
-
-Do not deviate from the principles, scope, or architectural decisions defined in these documents without explicit instruction from the user.
+- `docs/PROJECT_BRIEF.md` — Full project specification
+- `docs/DECISIONS.md` — Design decisions log
+- `docs/DEPLOYMENT.md` — Railway deployment guide
+- `docs/CURRENT_PHASE.md` — Phase status
 
 ## Quick Context
 
-- **What this is**: A web-based economics teaching platform presenting topics through multiple schools of thought (neoclassical, post-Keynesian, MMT, Austrian, ecological, etc.) with genuine pluralism and no ideological bias
-- **MVP**: A single topic hub on inflation with per-school explanations, comparison tools, a teaching chatbot, downloadable materials, and pre-generated audio content
-- **Stack**: Django, PostgreSQL, Railway, Claude API, TTS API for audio
-- **Builder**: Solo amateur developer using Claude as coding assistant, no budget beyond bootstrapping costs
-- **Content tiers**: (1) Approved reference material, (2) AI-assisted but reviewed platform content, (3) Fully generative on-demand content — each carrying a visible provenance label
+- **What this is**: Web-based economics teaching platform presenting topics through multiple schools of thought (neoclassical, post-Keynesian, MMT, Austrian, ecological, etc.)
+- **MVP**: Inflation topic hub with per-school explanations, comparison tools, teaching chatbot, downloadable materials, audio content
+- **Stack**: Django, PostgreSQL, Railway, Claude API, OpenAI TTS
+- **Repository**: https://github.com/ChrisB2025/econ-platform
 
 ## Completed Work
 
-### Phase 1: Research Documents
-All in `docs/research/`:
-- Topic map, 6 school research docs, comparison framework, source materials
+### Phase 1: Research
+All in `docs/research/` - Topic map, 6 school research docs, comparison framework, source materials
 
-### Phase 2: Content Documents
-All in `docs/content/`:
-- Introduction + 6 school explanations (Tier 2 platform content)
-- Structured comparisons document
-- Teaching materials: lesson plan, 30 discussion questions, 40 flashcards, assessment
-- Audio scripts: intro overview (~10 min), debate episode (~15 min)
-- Chatbot system prompt
+### Phase 2: Content
+All in `docs/content/` - Introduction, 6 school explanations, comparisons, teaching materials, audio scripts, chatbot prompt
 
-## Phase 3: Technical Build (Next)
+### Phase 3: Technical Build
+- Django project with PostgreSQL support
+- Database models: School, Topic, Explanation, ComparisonQuestion, SchoolPosition, TeachingMaterial, AudioContent
+- Topic hub page with school navigation
+- Comparison tool with school filtering
+- AI chatbot (Claude API) with pluralist system prompt
+- TTS audio generation (OpenAI API)
+- Materials download (Markdown/text formats)
+- Railway deployment with automated setup
 
-To be implemented:
-1. Set up Django project with virtual environment
-2. Create database models for content (topics, schools, explanations, comparisons)
-3. Build topic hub page with school-of-thought navigation
-4. Build comparison tool (select 2+ schools, see structured comparison)
-5. Integrate AI chatbot (Claude API with system prompt from `docs/content/chatbot-system-prompt.md`)
-6. Generate audio from scripts (TTS API)
-7. Build materials download section
-8. Deploy to Railway
+## Key Commands
 
-## Key Principles (Always Follow)
+```bash
+# Local development
+python manage.py runserver
 
-1. **Pluralism is genuine** — No school of thought favored in tone, depth, or framing
-2. **Steel-man before critique** — Present each view in strongest form first
-3. **Teaching, not advocacy** — Help users understand, don't convert them
-4. **IB-level accessibility** — Clear prose for ages 16-19, define jargon
-5. **Honest about limitations** — Acknowledge contested evidence and uncertainty
+# Load/reload content
+python manage.py load_inflation_content
+
+# Full setup (runs on Railway deploy)
+python manage.py setup_platform
+
+# Generate audio (requires OPENAI_API_KEY)
+python manage.py generate_audio --dry-run
+python manage.py generate_audio
+```
+
+## Railway Environment Variables
+
+Required:
+- `SECRET_KEY` - Django secret key
+- `DEBUG=False`
+- `ALLOWED_HOSTS` - Railway domain
+- `CSRF_TRUSTED_ORIGINS` - https://railway-domain
+- `DATABASE_URL` - Auto-set by Railway PostgreSQL
+
+Optional:
+- `ANTHROPIC_API_KEY` - Enables AI chatbot
+- `OPENAI_API_KEY` - Enables audio generation
+- `DJANGO_SUPERUSER_*` - Auto-creates admin user
+
+## Project Structure
+
+```
+├── pluralecon/          # Django project settings
+├── topics/              # Main app (models, views, templates)
+├── templates/           # HTML templates
+├── static/              # CSS, JS
+├── docs/                # Content source files
+├── Procfile             # Railway commands
+├── requirements.txt     # Python dependencies
+└── runtime.txt          # Python version
+```
+
+## Key Principles
+
+1. **Pluralism is genuine** — No school favored
+2. **Steel-man before critique** — Present strongest form first
+3. **Teaching, not advocacy** — Help understand, don't convert
+4. **IB-level accessibility** — Ages 16-19, clear prose
+5. **Honest about limitations** — Acknowledge uncertainty
