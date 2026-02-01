@@ -32,56 +32,59 @@
         </ul>
     </nav>
 
-    <!-- Main Content Area -->
-    <article class="topic-content">
-        <div class="introduction">
-            {{ introduction_html|safe }}
-        </div>
-
-        <!-- School Cards Grid -->
-        <section class="schools-overview">
-            <h2>Schools of Thought</h2>
-            <p class="section-intro">
-                Select a perspective below to explore how that school of thought explains {{ topic.name|lower }}.
-            </p>
-
-            <div class="school-cards">
-                {% for explanation in explanations %}
-                <a href="{% url 'topics:explanation' topic.slug explanation.school.slug %}"
-                   class="school-card"
-                   style="--school-color: {{ explanation.school.color }}">
-                    <h3>{{ explanation.school.name }}</h3>
-                    <p class="school-description">{{ explanation.school.short_description }}</p>
-                    <span class="card-cta">Read explanation</span>
-                </a>
-                {% endfor %}
+    <!-- Content Layout: Main + Sidebar -->
+    <div class="content-with-sidebar">
+        <!-- Main Content Area -->
+        <article class="topic-content">
+            <div class="introduction">
+                {{ introduction_html|safe }}
             </div>
-        </section>
-    </article>
 
-    <!-- Sidebar Navigation -->
-    <aside class="topic-sidebar">
-        <div class="sidebar-section">
-            <h3>Explore</h3>
-            <ul class="sidebar-links">
-                <li><a href="{% url 'topics:comparisons' topic.slug %}">Compare Schools</a></li>
-                <li><a href="{% url 'topics:materials' topic.slug %}">Teaching Materials</a></li>
-            </ul>
-        </div>
+            <!-- School Cards Grid -->
+            <section class="schools-overview">
+                <h2>Schools of Thought</h2>
+                <p class="section-intro">
+                    Select a perspective below to explore how that school of thought explains {{ topic.name|lower }}.
+                </p>
 
-        <div class="sidebar-section">
-            <h3>Quick Access</h3>
-            <ul class="sidebar-links">
-                {% for school in schools %}
-                <li>
-                    <a href="{% url 'topics:explanation' topic.slug school.slug %}"
-                       style="border-left-color: {{ school.color }}">
-                        {{ school.name }}
+                <div class="school-cards">
+                    {% for explanation in explanations %}
+                    <a href="{% url 'topics:explanation' topic.slug explanation.school.slug %}"
+                       class="school-card"
+                       style="--school-color: {{ explanation.school.color }}">
+                        <h3>{{ explanation.school.name }}</h3>
+                        <p class="school-description">{{ explanation.school.short_description }}</p>
+                        <span class="card-cta">Read explanation</span>
                     </a>
-                </li>
-                {% endfor %}
-            </ul>
-        </div>
-    </aside>
+                    {% endfor %}
+                </div>
+            </section>
+        </article>
+
+        <!-- Sidebar Navigation -->
+        <aside class="topic-sidebar">
+            <div class="sidebar-section">
+                <h3>Explore</h3>
+                <ul class="sidebar-links">
+                    <li><a href="{% url 'topics:comparisons' topic.slug %}">Compare Schools</a></li>
+                    <li><a href="{% url 'topics:materials' topic.slug %}">Teaching Materials</a></li>
+                </ul>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Quick Access</h3>
+                <ul class="sidebar-links">
+                    {% for school in schools %}
+                    <li>
+                        <a href="{% url 'topics:explanation' topic.slug school.slug %}"
+                           style="border-left-color: {{ school.color }}">
+                            {{ school.name }}
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </aside>
+    </div>
 </div>
 {% endblock %}

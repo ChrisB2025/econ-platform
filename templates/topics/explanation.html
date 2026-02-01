@@ -32,56 +32,59 @@
         </ul>
     </nav>
 
-    <!-- Main Content Area -->
-    <article class="explanation-content" style="--school-color: {{ school.color }}">
-        <div class="content-tier-badge tier-{{ explanation.tier }}">
-            {% if explanation.tier == 1 %}Approved Reference
-            {% elif explanation.tier == 2 %}Platform Content
-            {% else %}Generative Content{% endif %}
-        </div>
-
-        <div class="explanation-body prose">
-            {{ content_html|safe }}
-        </div>
-
-        <!-- Navigation to Other Schools -->
-        <nav class="school-navigation">
-            <h3>Explore Other Perspectives</h3>
-            <div class="other-schools">
-                {% for exp in explanations %}
-                {% if exp.school.slug != school.slug %}
-                <a href="{% url 'topics:explanation' topic.slug exp.school.slug %}"
-                   class="other-school-link"
-                   style="--school-color: {{ exp.school.color }}">
-                    <span class="school-name">{{ exp.school.name }}</span>
-                    <span class="school-desc">{{ exp.school.short_description|truncatewords:12 }}</span>
-                </a>
-                {% endif %}
-                {% endfor %}
+    <!-- Content Layout: Main + Sidebar -->
+    <div class="content-with-sidebar">
+        <!-- Main Content Area -->
+        <article class="explanation-content" style="--school-color: {{ school.color }}">
+            <div class="content-tier-badge tier-{{ explanation.tier }}">
+                {% if explanation.tier == 1 %}Approved Reference
+                {% elif explanation.tier == 2 %}Platform Content
+                {% else %}Generative Content{% endif %}
             </div>
-        </nav>
-    </article>
 
-    <!-- Sidebar -->
-    <aside class="topic-sidebar">
-        <div class="sidebar-section">
-            <h3>On This Page</h3>
-            <p class="sidebar-description">{{ school.short_description }}</p>
-        </div>
+            <div class="explanation-body prose">
+                {{ content_html|safe }}
+            </div>
 
-        <div class="sidebar-section">
-            <h3>Compare</h3>
-            <ul class="sidebar-links">
-                <li><a href="{% url 'topics:comparisons' topic.slug %}">Compare All Schools</a></li>
-            </ul>
-        </div>
+            <!-- Navigation to Other Schools -->
+            <nav class="school-navigation">
+                <h3>Explore Other Perspectives</h3>
+                <div class="other-schools">
+                    {% for exp in explanations %}
+                    {% if exp.school.slug != school.slug %}
+                    <a href="{% url 'topics:explanation' topic.slug exp.school.slug %}"
+                       class="other-school-link"
+                       style="--school-color: {{ exp.school.color }}">
+                        <span class="school-name">{{ exp.school.name }}</span>
+                        <span class="school-desc">{{ exp.school.short_description|truncatewords:12 }}</span>
+                    </a>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </nav>
+        </article>
 
-        <div class="sidebar-section">
-            <h3>Resources</h3>
-            <ul class="sidebar-links">
-                <li><a href="{% url 'topics:materials' topic.slug %}">Teaching Materials</a></li>
-            </ul>
-        </div>
-    </aside>
+        <!-- Sidebar -->
+        <aside class="topic-sidebar">
+            <div class="sidebar-section">
+                <h3>On This Page</h3>
+                <p class="sidebar-description">{{ school.short_description }}</p>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Compare</h3>
+                <ul class="sidebar-links">
+                    <li><a href="{% url 'topics:comparisons' topic.slug %}">Compare All Schools</a></li>
+                </ul>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Resources</h3>
+                <ul class="sidebar-links">
+                    <li><a href="{% url 'topics:materials' topic.slug %}">Teaching Materials</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
 </div>
 {% endblock %}
