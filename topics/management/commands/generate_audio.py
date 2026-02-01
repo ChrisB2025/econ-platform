@@ -151,7 +151,8 @@ class Command(BaseCommand):
     def _clean_script(self, script):
         """
         Clean markdown script for TTS.
-        Remove markdown formatting, headers, and stage directions.
+        Remove markdown formatting, headers, stage directions, and metadata.
+        Only process content between '## Script' and '## Production Notes'.
         """
         import re
 
@@ -161,7 +162,24 @@ class Command(BaseCommand):
         lines = script.split('\n')
         cleaned_lines = []
 
+        # Track whether we're in the script section
+        in_script_section = False
+
         for line in lines:
+            # Start processing at '## Script'
+            if line.strip() == '## Script':
+                in_script_section = True
+                continue
+
+            # Stop processing at '## Production Notes' or similar end sections
+            if line.strip().startswith('## Production') or line.strip().startswith('## Notes'):
+                in_script_section = False
+                continue
+
+            # Skip lines until we reach the script section
+            if not in_script_section:
+                continue
+
             # Skip markdown headers
             if line.startswith('#'):
                 continue
@@ -178,6 +196,10 @@ class Command(BaseCommand):
             if re.match(r'^[\*\-_\s]+$', line):
                 continue
 
+            # Skip metadata lines (bullet points with bold labels)
+            if re.match(r'^-\s*\*\*\w+:\*\*', line):
+                continue
+
             # Remove markdown bold/italic
             line = re.sub(r'\*\*(.+?)\*\*', r'\1', line)
             line = re.sub(r'\*(.+?)\*', r'\1', line)
@@ -189,6 +211,10 @@ class Command(BaseCommand):
 
             # Remove stage directions in brackets (common in scripts)
             line = re.sub(r'\[.+?\]', '', line)
+
+            # Skip speaker labels (e.g., "NARRATOR:", "HOST:", "GUEST 1:")
+            if re.match(r'^[A-Z][A-Z\s\d]*:\s*$', line.strip()):
+                continue
 
             # Clean up multiple spaces
             line = re.sub(r'\s+', ' ', line).strip()
