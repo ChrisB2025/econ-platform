@@ -2,21 +2,33 @@
 
 ## Current Status
 
-**Phase 3 (Technical Build) is COMPLETE. Deployed to Railway.**
+**Phase 3 (Technical Build) is COMPLETE. Fully deployed and operational on Railway.**
 
 - **Repository**: https://github.com/ChrisB2025/econ-platform
 - **Live URL**: https://web-production-0007.up.railway.app
 
-### Deployment Notes
-- Healthcheck fix applied: `.railway.app` wildcard in ALLOWED_HOSTS
-- Requires PostgreSQL database added in Railway
-- Content loads automatically via `release` phase in Procfile
+### What's Working
+- Topic hub with all 6 school explanations
+- Comparison tool with school filtering
+- AI chatbot (Claude API) with markdown rendering
+- Audio content (2 episodes generated, ~22 minutes total)
+- Teaching materials with download options
+- Persistent PostgreSQL database
+- Persistent volume for media/audio files
 
-### Next Steps (if continuing)
-1. Verify content loaded: visit `/topics/inflation/`
-2. Add `ANTHROPIC_API_KEY` for AI chatbot
-3. Add `OPENAI_API_KEY` and run `generate_audio` for audio content
-4. Phase 4: Testing and refinement
+## Infrastructure
+
+### Railway Services
+- **web**: Django app with gunicorn
+- **Postgres**: PostgreSQL database (persistent)
+- **Volume**: Mounted at `/app/media` for audio files
+
+### Key Fixes Applied
+- `/health` endpoint exempt from SSL redirect for Railway healthchecks
+- Flexbox layout for sidebar (was overlapping footer with float)
+- Media file serving with Range request support (required for audio playback)
+- Audio script cleaning removes metadata, stage directions, speaker labels
+- Markdown rendering in chatbot via marked.js
 
 ## Core Documents
 
@@ -45,10 +57,10 @@ All in `docs/content/` - Introduction, 6 school explanations, comparisons, teach
 - Database models: School, Topic, Explanation, ComparisonQuestion, SchoolPosition, TeachingMaterial, AudioContent
 - Topic hub page with school navigation
 - Comparison tool with school filtering
-- AI chatbot (Claude API) with pluralist system prompt
-- TTS audio generation (OpenAI API)
+- AI chatbot (Claude API) with pluralist system prompt and markdown rendering
+- TTS audio generation (OpenAI API) with script cleaning
 - Materials download (Markdown/text formats)
-- Railway deployment with automated setup
+- Railway deployment with PostgreSQL and persistent volume
 
 ## Key Commands
 
@@ -59,12 +71,20 @@ python manage.py runserver
 # Load/reload content
 python manage.py load_inflation_content
 
-# Full setup (runs on Railway deploy)
+# Full setup (runs on Railway deploy via startCommand)
 python manage.py setup_platform
 
 # Generate audio (requires OPENAI_API_KEY)
 python manage.py generate_audio --dry-run
 python manage.py generate_audio
+python manage.py generate_audio --regenerate  # Force regenerate all
+
+# Railway CLI commands
+railway link --project econ-platform
+railway service web
+railway ssh --service web "cd /app && /opt/venv/bin/python manage.py <command>"
+railway logs -n 50
+railway deployment list
 ```
 
 ## Railway Environment Variables
@@ -74,7 +94,7 @@ Required:
 - `DEBUG=False`
 - `ALLOWED_HOSTS` - Railway domain
 - `CSRF_TRUSTED_ORIGINS` - https://railway-domain
-- `DATABASE_URL` - Auto-set by Railway PostgreSQL
+- `DATABASE_URL` - References `${{Postgres.DATABASE_URL}}`
 
 Optional:
 - `ANTHROPIC_API_KEY` - Enables AI chatbot
@@ -89,7 +109,9 @@ Optional:
 ├── templates/           # HTML templates
 ├── static/              # CSS, JS
 ├── docs/                # Content source files
-├── Procfile             # Railway commands
+├── media/               # Audio files (on Railway volume)
+├── railway.toml         # Railway deployment config
+├── Procfile             # Web process definition
 ├── requirements.txt     # Python dependencies
 └── runtime.txt          # Python version
 ```
